@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sakshi Enterprises</title>
+</head>
+<body style="height:100%;width:100%;background-image:url('/static/img/wallpaper.jpg')">
+<form action="/login/" method="post" style="margin-left:30%;margin-top:20%">
+    <label for="username" style="color:white;display:block">Username:</label>
+    <input type="text" name="username" id="username">
+    <label for="password" style="color:white;display:block">Password:</label>
+    <input type="password" name="password" id="password">
+    <button type="submit" class="btn btn-block btn-flat" style="background-color: #00b5ff;color:white;display:block;margin-top:20px">Sign In</button>
+    {{error}}
+</form>
+</body>
+<style>
+    body {
+      background-image: url('example_img_girl.jpg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      background-attachment: fixed;
+    }
+</style>
+</html>

@@ -1,0 +1,53 @@
+{% extends 'home.html' %}
+
+{% block page_title %}
+ Stock Page
+{% endblock %}
+
+{% block main %}
+  <div ng-controller="ViewController">
+      <div class="row justify-content-md-center">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+              <div class="text-right">
+                  Product:
+                  <select ng-model="selected_product" ng-change="calculate_stock()">
+                    <option ng-repeat="product in product_list">[[product]]</option>
+                  </select>
+              </div>
+              <table style="width:100%;margin-top:30px">
+                <thead>
+                <th>Receipt ID</th>
+                <th>Product Name</th>
+                <th>Entry Type</th>
+                <th>Quantity</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in stock | filter:selected_product | orderBy:'-receipt_date'">
+                        <td><a href="/view_receipt/[[row.receipt_id]]" target="_blank">[[row.receipt_id]]</a></td>
+                        <td style="text-align:left">[[row.product_name]]</td>
+                        <td>[[row.entry_type]]</td>
+                        <td>[[row.qty]]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>Available Stock</td>
+                        <td>[[total]]</td>
+                    </tr>
+                </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+<style>
+    th{
+    background-color:#5656ad;
+    color:white;
+    text-align:center;
+    border:1px solid white
+    }
+    td{
+    border: 1px solid black;
+    text-align:center
+    }
+</style>
+{% endblock %}

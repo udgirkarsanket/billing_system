@@ -1,0 +1,56 @@
+{% extends 'home.html' %}
+
+{% block page_title %}
+ Add Product
+{% endblock %}
+
+{% block main %}
+  <div ng-controller="AddProductController">
+      <div class="row justify-content-md-center">
+          <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+              <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" class="form-control" id="company" ng-model="new_product.company" placeholder="Tulsi">
+              </div>
+              <div class="form-group">
+                <label for="type">Type</label>
+                <input type="text" class="form-control" id="type" ng-model="new_product.type" placeholder="Bend">
+              </div>
+              <div class="form-group">
+                <label for="size">size</label>
+                <input type="text" class="form-control" id="size" ng-model="new_product.size" placeholder="30X40">
+              </div>
+              <div class="form-group">
+                <label for="weight">Weight</label>
+                <input type="text" class="form-control" id="weight" ng-model="new_product.weight" placeholder="50">
+              </div>
+              <div class="form-group">
+                  <a class="btn btn-success" ng-click="add()">Add</a>
+                  <a class="btn btn-danger" href="/">Cancel</a>
+              </div>
+          </div>
+          <div class="col-10">
+              <table class="col-10" style="margin-top:20px">
+              <thead>
+                <th style="width:10%">Sr. No.</th>
+                <th style="width:70%">Product Name</th>
+                <th style="width:20%">Actions</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="row in products | filter:{company:new_product.company,type:new_product.type,size:new_product.size,weight:new_product.weight}">
+                    <td>[[$index+1]]</td>
+                    <td>[[row.product_name]]</td>
+                    <td><i class="fa fa-pen" ng-click="editProduct(row)"></i><i style="margin-left:10px" class="fa fa-trash-alt" ng-click="deleteProduct(row)"></i></td>
+                </tr>
+              </tbody>
+          </table>
+          </div>
+      </div>
+  </div>
+<style>
+    .btn-main{
+    height: 120px;
+    border-radius: 0;
+    }
+</style>
+{% endblock %}

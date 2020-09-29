@@ -1,0 +1,39 @@
+{% extends 'home.html' %}
+
+{% block page_title %}
+ Home Page
+{% endblock %}
+
+{% block main %}
+  <div ng-controller="HomeController">
+      <div class="row justify-content-md-center">
+
+          <a href="/open_add_receipt" type="button" class="btn btn-flat col-lg-5 col-md-12 col-sm-12 col-xs-12 btn-main" style="background-color:#FFBD33;"><label style="margin-top:25px"><i class="fa fa-plus"></i><br>Add Receipt</label></a>
+          <a href="/open_view_stock" type="button" class="btn btn-flat col-lg-5 col-md-12 col-sm-12 col-xs-12 btn-main" style="background-color:#E90040;"><label style="margin-top:25px"><i class="fa fa-file"></i><br>View Stock</label></a>
+          <a href="/open_print_receipt" type="button" class="btn btn-flat col-lg-5 col-md-12 col-sm-12 col-xs-12 btn-main" style="background-color:blue;"><label style="margin-top:25px"><i class="fa fa-print"></i><br>Print Receipt</label></a>
+          <a href="/open_add_product" type="button" class="btn btn-flat col-lg-5 col-md-12 col-sm-12 col-xs-12 btn-main" style="background-color:#00b5ff;"><label style="margin-top:25px"><i class="fa fa-truck"></i><br>Add Product</label></a>
+            <h1>List of low stock</h1>
+          <table class="col-10" style="margin-top:20px">
+              <thead>
+                <th style="width:10%">Sr. No.</th>
+                <th style="width:60%">Product</th>
+                <th style="width:30%">Stock</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="row in products | orderBy:'-stock' | filter:customfilter">
+                    <td>[[$index +1]]</td>
+                    <td style="text-align:left">[[row.product_name]]</td>
+                    <td>[[row.stock]]</td>
+                </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+<style>
+    .btn-main{
+    height: 120px;
+    border-radius: 0;
+    margin:5px
+    }
+</style>
+{% endblock %}

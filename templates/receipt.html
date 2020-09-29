@@ -1,0 +1,172 @@
+<head>    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body id="content" ng-app="myApp" ng-controller="myController">
+<input type="hidden" id="receipt_details" value="{{receipt_details}}">
+<input type="hidden" id="item_list" value="{{item_list}}">
+<input type="hidden" id="receipt_id" value="{{receipt_id}}">
+    <div class="content">
+      <div class="row justify-content-md-center">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="border: 2px solid blue">
+                  <div class="text-left" style="display:inline-block;width:33%">Subjected to Nanded Jurisdiction</div>
+                  <div class="text-center" style="display:inline-block;width:33%">Tax Invoice</div>
+                  <div class="text-right" style="display:inline-block;width:33%">GST IN:27AATHS8863JG1Z8</div>
+                  <div class="text-right">Mob. 9422171086, 8830629584</div>
+                  <div class="row" style="padding-bottom:5px;border-block-end:2px solid blue">
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><img src="/static/img/se.logo.png" height="83px"></div>
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="font-size: 55px;font-weight: 900;color: #e22f2f;font-family: courier;">SAKSHI ENTERPRISES</div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="color:white;background-color:#5656ad">Padmaja Hills, Malegaon Road, Pasadgaon, NANDED.</div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                  </div>
+                  <div class="row" style="border-block-end:2px solid blue; padding-bottom:5px">
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="border-right:2px solid blue">
+                          <div>Shri: <label>[[ receipt_details['customer_name'] ]]</label></div>
+                          <div style="display:inline-block;width:75%">GST IN: <label>[[ receipt_details['customer_gst'] ]]</label></div>
+                          <div style="display:inline-block;width:22%">State Code: <label>[[ receipt_details['state_code'] ]]</label></div>
+                      </div>
+                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                          No:[[receipt_id]] <hr>
+                          Date: [[ receipt_details['creation_date']|date:'dd-MM-yyyy' ]]
+                      </div>
+                  </div>
+            <table style="width:100%; margin-top:10px;min-height:400px">
+                  <thead>
+                  <tr style="width:100%">
+                    <th style="width:5%">Sr No.</th>
+                    <th style="width:30%">Product</th>
+                    <th style="width:15%">HSN Code GST</th>
+                    <th style="width:10%">Qty</th>
+                    <th style="width:10%">Rate</th>
+                    <th style="width:15%" ng-if="receipt_details['entry_type']=='purchase'">Discount</th>
+                    <th style="width:15%">Amount</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-if="item_list.length==0" style="height:100px;border-bottom:1px solid black">
+                      <td colspan="7"></td>
+                  </tr>
+                  <tr ng-repeat="row in item_list">
+                      <td>[[ $index+1]]</td>
+                      <td>[[ row.product]]</td>
+                      <td>[[ row.hsn_gst]]</td>
+                      <td>[[row.qty]]</td>
+                      <td>[[row.rate | number:2]]</td>
+                      <td ng-if="receipt_details['entry_type']=='purchase'">[[row.discount | number:2]]%</td>
+                      <td>[[row.qty*row.rate*(1-row.discount/100) | number:2]]</td>
+                  </tr>
+                  </tbody>
+              </table>
+              <table style="width:100%">
+                  <tbody>
+                  <tr>
+                      <td colspan="5" rowspan="4" style="border:1px solid black;width:70%"> Rs. in Words: [[ formatAmount(receipt_details['total_cost']) ]]</td>
+                      <td style="border-top: 1px solid black;width:15%">Total Amount</td>
+                      <td style="border-top: 1px solid black">[[ receipt_details['cost'] | number:2 ]]</td>
+                  </tr>
+                  <tr>
+                      <td>CGST</td>
+                      <td>[[ receipt_details['cgst'] | number:2 ]]</td>
+                  </tr>
+                  <tr>
+                      <td>SGST</td>
+                      <td>[[ receipt_details['sgst'] | number:2 ]]</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid black">
+                      <td>Grand Total</td>
+                      <td>[[ receipt_details['total_cost'] | number:2 ]] Rs.</td>
+                  </tr>
+                  </tbody>
+              </table>
+              <div style="margin-top:50px">
+                  <div class="text-left" style="display:inline-block;width:50%">Receiver's Signature</div>
+                  <div class="text-right" style="display:inline-block;width:49%">For, Sakshi Enterprises</div>
+              </div>
+          </div>
+      </div>
+        </div>
+</body>
+<link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-sanitize.min.js"></script>
+<script>
+var app = angular.module('myApp', ['ngSanitize']);
+    app.config(['$interpolateProvider', function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('[[');
+        $interpolateProvider.endSymbol(']]');
+    }]);
+    app.controller('myController', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+        // Getting Data From Jinja
+        $scope.receipt_details = JSON.parse(document.getElementById('receipt_details').value);
+        $scope.item_list = JSON.parse(document.getElementById('item_list').value);
+        $scope.receipt_id = document.getElementById('receipt_id').value;
+
+    $scope.convert_to_word = function(num){
+        var units = [
+            'Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight',
+            'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen',
+            'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+        ]
+        var tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+        if(num>20){
+        return tens[parseInt(num/10)]+' '+((num%10>0)?units[num%10]:'')
+        }
+        else if(num<20){
+        return units[num]
+        }
+    }
+    $scope.formatAmount = function(amt){
+        amt = amt.toFixed(2)
+        var temp = []
+        if(amt>99999){
+        var lakhs = parseInt(amt/100000)
+        temp.push($scope.convert_to_word(lakhs)+' Lakh')
+        amt = amt - lakhs*100000
+        }
+        if(amt>999){
+        var thousands = parseInt(amt/1000)
+        temp.push($scope.convert_to_word(thousands)+' Thousands')
+        amt = amt - thousands*1000
+        }
+        if(amt>99){
+        var hundreds = parseInt(amt/100)
+        temp.push($scope.convert_to_word(hundreds)+' Hundreds')
+        amt = amt - hundreds*100
+        }
+        if(amt>0){
+        if(temp.length>0){
+        temp.push('and')}
+        var units = parseInt(amt)
+        temp.push($scope.convert_to_word(units) + ' Rupees')
+        amt = amt - units
+        }
+        if(amt<1){
+        var paise = parseInt(amt*100)
+        temp.push($scope.convert_to_word(paise)+' Paise')
+        amt=0
+        }
+        if(amt==0){
+        temp.push(' Only')
+        }
+        return temp.join(' ')
+        }
+}]);
+</script>
+<style>
+    body {
+        font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin-top:40px
+    }
+    th{
+    background-color:#5656ad;
+    color:white;
+    text-align:center;
+    border:1px solid white
+    }
+    td{
+    border-left: 1px solid black;
+    border-right: 1px solid black
+    }
+</style>

@@ -1,0 +1,214 @@
+{% extends 'home.html' %}
+
+{% block page_title %}
+ Add Receipt
+{% endblock %}
+
+{% block main %}
+  <div ng-controller="AddReceiptController">
+      <input type="hidden" id="product_list_raw" value="{{product_list}}">
+      <div class="row justify-content-md-center">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+              <div class="text-right">
+                  Date* : <input type="date" ng-model="receipt_details['creation_date']">
+                  Receipt Type* : <label><input type="radio" ng-model="receipt_details['entry_type']"  name="entry_type" value="sell">Sell</label>
+                  <label><input type="radio" ng-model="receipt_details['entry_type']" name="entry_type" value="purchase">Purchase</label>
+              </div>
+              <div class="form-group">
+                <label for="name">Customer Name*</label>
+                <input type="text" class="form-control" ng-model="receipt_details['customer_name']" id="name">
+              </div>
+              <div class="form-group">
+                <label for="customer_gst">Customer GST ID</label>
+                <input type="text" class="form-control" ng-model="receipt_details['customer_gst']" id="customer_gst">
+              </div>
+              <div class="form-group">
+                <label for="state_code">State Code</label>
+                <input type="text" class="form-control" ng-model="receipt_details['state_code']" id="state_code">
+              </div>
+              <div class="form-group">
+                <label for="product">Product</label>
+                  <div class="input-group">
+                  <select id="product"  class="form-control" ng-model="temp.product" ng-change="check_stock()">
+                    <option value="">--Select--</option>
+                    <option ng-repeat="product in product_list | orderBy:'+product_name'" value="[[product.product_name]]">[[product.product_name]]</option>
+                  </select>
+                      <div class="input-group-append">
+                        <span class="input-group-text text-center small-font">[[ available_stock ]] Items Available</span>
+                          <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i></button>
+                      </div>
+                   </div>
+              </div>
+              <div class="form-group">
+                <label for="hsn_gst">HSN Code GST</label>
+                <input type="text" class="form-control" ng-model="temp.hsn_gst" id="hsn_gst">
+              </div>
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input type="number" class="form-control" ng-model="temp.qty" id="qty">
+              </div>
+              <div class="form-group">
+                <label for="rate">Rate</label>
+                <input type="number" class="form-control" ng-model="temp.rate" id="rate">
+              </div>
+              <div class="form-group" ng-if="receipt_details['entry_type']=='purchase'">
+                <label for="discount">Discount</label>
+                <input type="number" class="form-control" ng-model="temp.discount" id="discount">
+              </div>
+              <div class="form-group">
+                  <a class="btn btn-success" ng-click="add()">Add</a>
+              </div>
+          </div>
+      </div>
+      <div class="row justify-content-md-center">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="border: 2px solid blue">
+                  <div class="text-left" style="display:inline-block;width:33%">Subjected to Nanded Jurisdiction</div>
+                  <div class="text-center" style="display:inline-block;width:33%">Tax Invoice</div>
+                  <div class="text-right" style="display:inline-block;width:33%">GST IN:27AATHS8863JG1Z8</div>
+                  <div class="text-right">Mob. 9422171086, 8830629584</div>
+                  <div class="row" style="padding-bottom:5px;border-block-end:2px solid blue">
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><img src="/static/img/se.logo.png" height="83px"></div>
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="font-size: 55px;font-weight: 900;color: #e22f2f;font-family: courier;">SAKSHI ENTERPRISES</div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="color:white;background-color:#5656ad">Padmaja Hills, Malegaon Road, Pasadgaon, NANDED.</div>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+                  </div>
+                  <div class="row" style="border-block-end:2px solid blue; padding-bottom:5px">
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="border-right:2px solid blue">
+                          <div>Shri: <label>[[ receipt_details['customer_name'] ]]</label></div>
+                          <div style="display:inline-block;width:75%">GST IN: <label>[[ receipt_details['customer_gst'] ]]</label></div>
+                          <div style="display:inline-block;width:22%">State Code: <label>[[ receipt_details['state_code'] ]]</label></div>
+                      </div>
+                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                          No: <hr>
+                          Date: [[ receipt_details['creation_date']|date:'dd-MM-yyyy' ]]
+                      </div>
+                  </div>
+            <table style="width:100%; margin-top:10px;min-height:400px">
+                  <thead>
+                  <tr style="width:100%">
+                    <th style="width:5%">Sr No.</th>
+                    <th style="width:30%">Product</th>
+                    <th style="width:15%">HSN Code GST</th>
+                    <th style="width:10%">Qty</th>
+                    <th style="width:10%">Rate</th>
+                    <th style="width:15%" ng-if="receipt_details['entry_type']=='purchase'">Discount</th>
+                    <th style="width:15%">Amount</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-if="item_list.length==0" style="height:100px;border-bottom:1px solid black">
+                      <td colspan="7"></td>
+                  </tr>
+                  <tr ng-repeat="row in item_list">
+                      <td> <i class="fa fa-trash-alt" ng-click="remove(row)"></i> [[ $index+1]]</td>
+                      <td>[[ row.product]]</td>
+                      <td>[[ row.hsn_gst]]</td>
+                      <td>[[row.qty]]</td>
+                      <td>[[row.rate | number:2]]</td>
+                      <td ng-if="receipt_details['entry_type']=='purchase'">[[row.discount | number:2]]%</td>
+                      <td>[[row.qty*row.rate*(1-row.discount/100) | number:2]]</td>
+                  </tr>
+                  </tbody>
+              </table>
+              <table style="width:100%">
+                  <tbody>
+                  <tr>
+                      <td colspan="5" rowspan="4" style="border:1px solid black;width:70%"> Rs. in Words: [[ formatAmount(receipt_details['total_cost']) ]]</td>
+                      <td style="border-top: 1px solid black;width:15%">Total Amount</td>
+                      <td style="border-top: 1px solid black">[[ receipt_details['cost'] | number:2 ]]</td>
+                  </tr>
+                  <tr>
+                      <td>CGST</td>
+                      <td>[[ receipt_details['cgst'] | number:2 ]]</td>
+                  </tr>
+                  <tr>
+                      <td>SGST</td>
+                      <td>[[ receipt_details['sgst'] | number:2 ]]</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid black">
+                      <td>Grand Total</td>
+                      <td>[[ receipt_details['total_cost'] | number:2 ]] Rs.</td>
+                  </tr>
+                  </tbody>
+              </table>
+              <div style="margin-top:50px">
+                  <div class="text-left" style="display:inline-block;width:50%">Receiver's Signature</div>
+                  <div class="text-right" style="display:inline-block;width:49%">For, Sakshi Enterprises</div>
+              </div>
+          </div>
+      </div>
+      <div class="row justify-content-md-center">
+              <div class="form-group" style="margin-top:10px">
+                  <a class="btn btn-success" ng-click="submit()">Submit</a>
+                  <a class="btn btn-danger" href="/">Cancel</a>
+              </div>
+      </div>
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row justify-content-md-center">
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+              <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" class="form-control" id="company" ng-model="new_product.company" placeholder="Tulsi">
+              </div>
+              <div class="form-group">
+                <label for="type">Type</label>
+                <input type="text" class="form-control" id="type" ng-model="new_product.type" placeholder="Bend">
+              </div>
+              <div class="form-group">
+                <label for="size">size</label>
+                <input type="text" class="form-control" id="size" ng-model="new_product.size" placeholder="30X40">
+              </div>
+              <div class="form-group">
+                <label for="weight">Weight</label>
+                <input type="text" class="form-control" id="weight" ng-model="new_product.weight" placeholder="50">
+              </div>
+          </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="addProduct()" data-dismiss="modal">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>
+<style>
+    .btn-main{
+    height: 120px;
+    border-radius: 0;
+    }
+    th{
+    background-color:#5656ad;
+    color:white;
+    text-align:center;
+    border:1px solid white
+    }
+    td{
+    border-left: 1px solid black;
+    border-right: 1px solid black
+    }
+    .discount::after{
+    content: '%'
+    }
+</style>
+<script>
+    input_qty = document.getElementById("qty")
+    input_qty.addEventListener("mousewheel", function(event){ this.blur() })
+    input_rate = document.getElementById("rate")
+    input_rate.addEventListener("mousewheel", function(event){ this.blur() })
+    input_discount = document.getElementById("discount")
+    input_discount.addEventListener("mousewheel", function(event){ this.blur() })
+</script>
+{% endblock %}

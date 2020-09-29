@@ -1,0 +1,44 @@
+{% extends 'home.html' %}
+
+{% block page_title %}
+ Print Receipt
+{% endblock %}
+
+{% block main %}
+  <div ng-controller="PrintController">
+      <div class="row justify-content-md-center">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+              <table style="width:100%;margin-top:30px">
+                <thead>
+                <th>Receipt ID</th>
+                <th>Customer Name</th>
+                <th>Receipt Date</th>
+                <th>Grand Total</th>
+                <th>Action</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in receipts | orderBy:'-receipt_date'">
+                        <td><a href="/view_receipt/[[row.receipt_id]]" target="_blank">[[row.receipt_id]]</a></td>
+                        <td style="text-align:left">[[row.customer_name]]</td>
+                        <td>[[row.receipt_date]]</td>
+                        <td>[[row.total | number:2]]</td>
+                        <td><i class="fa fa-trash-alt" ng-click="remove(row)"></i></td>
+                    </tr>
+                </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+<style>
+    th{
+    background-color:#5656ad;
+    color:white;
+    text-align:center;
+    border:1px solid white
+    }
+    td{
+    border: 1px solid black;
+    text-align:center
+    }
+</style>
+{% endblock %}
